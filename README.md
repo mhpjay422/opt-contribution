@@ -1,15 +1,9 @@
-# Basic Sample Hardhat Project
+Requirements
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+## Contribution Smart Contract
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
-```
+- The smart contract accepts contributions in ETH from people
+- The contract divides the ETH up evenly and distributes it to the people who contributed.
+- The maximum contribution per address is 10 ETH
+- The maximum contribution should be configurable by the owner of the contract
+- The owner should be able to transfer ownership to someone else of their choice
