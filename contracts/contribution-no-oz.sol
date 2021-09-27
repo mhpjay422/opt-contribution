@@ -24,4 +24,10 @@ contract ContributionNoOz is ReentrancyGuard {
     maxContribution = 10;
   }
 
+  function changeMaxContribution(uint newMaxContrinution) external {
+    require(msg.sender == owner, "only the owner may change the max contribution");
+    maxContribution = newMaxContrinution;
+  }
+  
+  
 }
