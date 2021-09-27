@@ -64,5 +64,9 @@ contract ContributionNoOz is ReentrancyGuard {
     balances[msg.sender] = 0;
     (bool sent, bytes memory data) = msg.sender.call{value: shareValue}("");
     require(sent, "Failed to send Ether");
+  }
+
+  function getContractBalance() public view returns (uint) {
+    return contractBalance;
   }  
 }
