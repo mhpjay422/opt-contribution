@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.4;
 
-contract Contribution{
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+
+contract Contribution is ReentrancyGuard {
   address owner;
   uint private maxContribution;
   bool private canWithdraw;
@@ -9,6 +11,7 @@ contract Contribution{
   constructor() {
     owner = msg.sender;
     maxContribution = 10;
+    canWithdraw = false;
   }
 
   function setWithdraw(bool enableWithdraw) external {
@@ -16,6 +19,7 @@ contract Contribution{
 
     canWithdraw = enableWithdraw;
   }
+
 
   function deposit() external payable {
     balances[msg.sender] += msg.value;
