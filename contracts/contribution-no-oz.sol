@@ -29,5 +29,15 @@ contract ContributionNoOz is ReentrancyGuard {
     maxContribution = newMaxContrinution;
   }
   
+  function closeContributionAndEnableWithdraw() external {
+    require(msg.sender == owner, "only the owner may change the ability to withdraw");
+    require(contractBalance > 0, "this contract has no balance");
+
+    canWithdraw = true;
+    canDeposit = false;
+    shareValue = contractBalance / _contributerCount.current();
+  }
+
+
   
 }
