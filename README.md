@@ -4,7 +4,7 @@ Requirements
 
 - The smart contract accepts contributions in ETH from people<br>
   <br>
-- The contract divides the ETH up evenly and distributes it to the people who contributed.<br>
+- The contract divides the ETH up evenly and distributes it to the people who contributed<br>
   <br>
 - The maximum contribution per address is 10 ETH<br>
   <br>
