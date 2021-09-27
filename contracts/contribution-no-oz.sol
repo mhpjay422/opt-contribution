@@ -38,6 +38,10 @@ contract ContributionNoOz is ReentrancyGuard {
     shareValue = contractBalance / _contributerCount.current();
   }
 
+  function transferOwnership(address newOwner) external {
+    require(msg.sender == owner, "only the owner may use this function");
+    owner = newOwner;
+  }
 
   
 }
