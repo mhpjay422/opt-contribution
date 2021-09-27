@@ -10,6 +10,7 @@ contract Contribution is Ownable {
     maxContribution = 10;
   }
 
+  function deposit() public payable {}
   function changeMaxContribution(uint newMaxContrinution) public onlyOwner{
     maxContribution = newMaxContrinution;
   }
