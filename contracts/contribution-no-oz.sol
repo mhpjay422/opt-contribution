@@ -56,5 +56,13 @@ contract ContributionNoOz is ReentrancyGuard {
 
     require(balances[msg.sender] <= 10, "your balance is greater than the allowed amount");
   }
-  
+
+  function withdraw() external {
+    require(canWithdraw == true, "withdraw is not enabled");
+    require(balances[msg.sender] >= 0, "You are not eligible to withdraw");
+
+    balances[msg.sender] = 0;
+    (bool sent, bytes memory data) = msg.sender.call{value: shareValue}("");
+    require(sent, "Failed to send Ether");
+  }  
 }
