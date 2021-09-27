@@ -2,16 +2,16 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/finance/PaymentSplitter.sol";
 
-contract Contribution is Ownable {
-  mapping ( address => uint256 ) public balances;
+abstract contract Contribution is Ownable, PaymentSplitter {
   uint private maxContribution;
   constructor() {
     maxContribution = 10;
   }
 
-  function deposit() public payable {}
-  function changeMaxContribution(uint newMaxContrinution) public onlyOwner{
+  function deposit() external payable {}
+  function changeMaxContribution(uint newMaxContrinution) external onlyOwner{
     maxContribution = newMaxContrinution;
   }
 }
