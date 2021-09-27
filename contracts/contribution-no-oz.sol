@@ -43,5 +43,18 @@ contract ContributionNoOz is ReentrancyGuard {
     owner = newOwner;
   }
 
+  function deposit() external payable {
+    require(canDeposit, "Deposit has been disabled");
+    
+    if(balances[msg.sender] >= 0) {
+      balances[msg.sender] += msg.value;
+    } else {
+      balances[msg.sender] = msg.value;
+      _contributerCount.increment();
+    } 
+    contractBalance += msg.value;
+
+    require(balances[msg.sender] <= 10, "your balance is greater than the allowed amount");
+  }
   
 }
