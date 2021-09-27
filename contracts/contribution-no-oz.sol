@@ -11,6 +11,11 @@ contract Contribution{
     maxContribution = 10;
   }
 
+  function setWithdraw(bool enableWithdraw) external {
+    require(msg.sender == owner, "only the owner may change the ability to withdraw");
+
+    canWithdraw = enableWithdraw;
+  }
 
   function deposit() external payable {
     balances[msg.sender] += msg.value;
