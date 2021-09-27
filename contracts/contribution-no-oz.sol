@@ -13,10 +13,10 @@ contract ContributionNoOz is ReentrancyGuard {
   address owner;
   bool private canWithdraw;
   bool private canDeposit;
-  uint private maxContribution;
-  uint private shareValue;
-  uint private contractBalance;
-  mapping ( address => uint256 ) private balances;
+  uint public maxContribution;
+  uint public shareValue;
+  uint public contractBalance;
+  mapping ( address => uint256 ) public balances;
   constructor() {
     owner = msg.sender;
     canWithdraw = false;
@@ -24,9 +24,9 @@ contract ContributionNoOz is ReentrancyGuard {
     maxContribution = 10;
   }
 
-  function changeMaxContribution(uint newMaxContrinution) external {
+  function changeMaxContribution(uint newMaxContribution) external {
     require(msg.sender == owner, "only the owner may change the max contribution");
-    maxContribution = newMaxContrinution;
+    maxContribution = newMaxContribution;
   }
   
   function closeContributionAndEnableWithdraw() external {
@@ -68,5 +68,9 @@ contract ContributionNoOz is ReentrancyGuard {
 
   function getContractBalance() public view returns (uint) {
     return contractBalance;
+  }  
+
+  function getContractMaxContribution() public view returns (uint) {
+    return maxContribution;
   }  
 }
