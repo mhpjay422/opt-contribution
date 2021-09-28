@@ -10,7 +10,7 @@ contract ContributionNoOz is ReentrancyGuard {
   using Counters for Counters.Counter;
   Counters.Counter private _contributerCount;
 
-  address owner;
+  address private owner;
   bool private canWithdraw;
   bool private canDeposit;
   uint public maxContribution;
@@ -22,6 +22,8 @@ contract ContributionNoOz is ReentrancyGuard {
     canWithdraw = false;
     canDeposit = true;
     maxContribution = 10;
+    shareValue = 0;
+    contractBalance = 0;
   }
 
   function changeMaxContribution(uint newMaxContribution) external {
@@ -65,12 +67,4 @@ contract ContributionNoOz is ReentrancyGuard {
     (bool sent, bytes memory data) = msg.sender.call{value: shareValue}("");
     require(sent, "Failed to send Ether");
   }
-
-  function getContractBalance() public view returns (uint) {
-    return contractBalance;
-  }  
-
-  function getContractMaxContribution() public view returns (uint) {
-    return maxContribution;
-  }  
 }
