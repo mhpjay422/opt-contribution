@@ -11,8 +11,8 @@ contract ContributionNoOz is ReentrancyGuard {
   Counters.Counter private _contributerCount;
 
   address private owner;
-  bool private canWithdraw;
-  bool private canDeposit;
+  bool public canWithdraw;
+  bool public canDeposit;
   uint public maxContribution;
   uint public shareValue;
   uint private contractBalance;
