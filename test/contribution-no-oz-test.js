@@ -20,6 +20,15 @@ describe("ContributionNoOz", function () {
 
       expect(maxContribution).to.equal(2);
     });
+    it("errors when a non-owner tries to change the max contribution", async function () {
+      [owner, user] = await ethers.getSigners();
+      contractAddress = this.contribution.address;
+      contribution = this.contribution;
+
+      await expect(
+        contribution.connect(user).changeMaxContribution(2)
+      ).to.be.revertedWith("only the owner may change the max contribution");
+    });
   });
 
   describe("getContractBalance", function () {
@@ -29,7 +38,7 @@ describe("ContributionNoOz", function () {
     });
 
     it("gets the balance of the contract when the balance has increased", async function () {
-      [user] = await ethers.getSigners();
+      [owner, user1] = await ethers.getSigners();
       contractAddress = this.contribution.address;
       await this.contribution.connect(user).deposit({
         value: 10,
