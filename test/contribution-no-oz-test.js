@@ -65,6 +65,57 @@ describe("ContributionNoOz", function () {
     });
   });
 
+  describe("withdraw", function () {
+    it("disallows a user to withdraw when withdraw has not been enabled", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+      await this.contribution.connect(owner).deposit({
+        value: 1,
+      });
+      await this.contribution.connect(user).deposit({
+        value: 1,
+      });
+      await this.contribution.connect(user2).deposit({
+        value: 10,
+      });
+
+      await expect(
+        this.contribution.connect(owner).withdraw()
+      ).to.be.revertedWith("withdraw is not enabled");
+    });
+
+    it("allows a user to withdraw after withdraw has been enabled", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+      await this.contribution.connect(owner).deposit({
+        value: 1,
+      });
+      await this.contribution.connect(user).deposit({
+        value: 1,
+      });
+      await this.contribution.connect(user2).deposit({
+        value: 10,
+      });
+      await this.contribution
+        .connect(owner)
+        .closeContributionAndEnableWithdraw();
+      await this.contribution.connect(owner).withdraw();
+      newBalance = (await this.contribution.getContractBalance()).toNumber();
+      expect(newBalance).to.eq(8);
+    });
+
+    it("disallows a user to withdraw when the users account has no balance", async function () {
+      [owner, user] = await ethers.getSigners();
+      await this.contribution.connect(owner).deposit({
+        value: 10,
+      });
+      await this.contribution
+        .connect(owner)
+        .closeContributionAndEnableWithdraw();
+      await expect(
+        this.contribution.connect(user).withdraw()
+      ).to.be.revertedWith("You are not eligible to withdraw");
+    });
+  });
+
   describe("changeMaxContribution", function () {
     it("changes the max contribution", async function () {
       [owner] = await ethers.getSigners();
