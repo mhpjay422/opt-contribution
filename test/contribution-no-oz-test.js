@@ -196,4 +196,22 @@ describe("ContributionNoOz", function () {
       expect(getBalance).to.equal(10);
     });
   });
+
+  describe("transferOwnership", function () {
+    it("allows the owner to transfer ownership", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+      await this.contribution.connect(owner).transferOwnership(user.address);
+      owner = await this.contribution.owner();
+
+      expect(owner).to.eq(user.address);
+    });
+
+    it("does not allow the a non-owner to transfer ownership", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+
+      await expect(
+        this.contribution.connect(user).transferOwnership(user.address)
+      ).to.be.revertedWith("only the owner may use this function");
+    });
+  });
 });
