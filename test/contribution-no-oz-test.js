@@ -1,4 +1,4 @@
-const { expect } = require("chai");
+const { assert, expect } = require("chai");
 const { ethers } = require("hardhat");
 
 describe("ContributionNoOz", function () {
@@ -9,6 +9,49 @@ describe("ContributionNoOz", function () {
   beforeEach(async function () {
     this.contribution = await this.Contribution.deploy();
     await this.contribution.deployed();
+  });
+
+  describe("closeContributionAndEnableWithdraw", function () {
+    it("Does not allow a user to enable withdraw if not the owner", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+      await this.contribution.connect(owner).deposit({
+        value: 1,
+      });
+
+      await expect(
+        this.contribution.connect(user).closeContributionAndEnableWithdraw()
+      ).to.be.revertedWith("only the owner may change the ability to withdraw");
+    });
+
+    it("allows a user to enable withdraw the owner", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+      await this.contribution.connect(owner).deposit({
+        value: 1,
+      });
+      await this.contribution
+        .connect(owner)
+        .closeContributionAndEnableWithdraw();
+      canWithdraw = await this.contribution.canWithdraw();
+      canDeposit = await this.contribution.canDeposit();
+      assert.isOk(canWithdraw);
+      assert.isNotOk(canDeposit);
+    });
+
+    it("assigns a shareValue when called", async function () {
+      [owner, user, user2] = await ethers.getSigners();
+      await this.contribution.connect(owner).deposit({
+        value: 1,
+      });
+
+      originialShareValue = await this.contribution.shareValue();
+
+      await this.contribution
+        .connect(owner)
+        .closeContributionAndEnableWithdraw();
+
+      newShareValue = await this.contribution.shareValue();
+      assert.isOk(newShareValue > originialShareValue);
+    });
   });
 
   describe("deposit", function () {
