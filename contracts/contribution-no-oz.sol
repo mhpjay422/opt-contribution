@@ -15,7 +15,7 @@ contract ContributionNoOz is ReentrancyGuard {
   bool private canDeposit;
   uint public maxContribution;
   uint public shareValue;
-  uint public contractBalance;
+  uint private contractBalance;
   mapping ( address => uint256 ) public balances;
   constructor() {
     owner = msg.sender;
@@ -24,6 +24,29 @@ contract ContributionNoOz is ReentrancyGuard {
     maxContribution = 10;
     shareValue = 0;
     contractBalance = 0;
+  }
+
+  function deposit() external payable {
+    require(canDeposit, "Deposit has been disabled");
+    
+    if(balances[msg.sender] > 0) {
+      balances[msg.sender] += msg.value;
+    } else {
+      balances[msg.sender] = msg.value;
+      _contributerCount.increment();
+    } 
+    contractBalance += msg.value;
+
+    require(balances[msg.sender] <= 10, "your balance is greater than the allowed amount");
+  }
+
+  function withdraw() external {
+    require(canWithdraw == true, "withdraw is not enabled");
+    require(balances[msg.sender] >= 0, "You are not eligible to withdraw");
+
+    balances[msg.sender] = 0;
+    (bool sent, bytes memory data) = msg.sender.call{value: shareValue}("");
+    require(sent, "Failed to send Ether");
   }
 
   function changeMaxContribution(uint newMaxContribution) external {
@@ -45,26 +68,7 @@ contract ContributionNoOz is ReentrancyGuard {
     owner = newOwner;
   }
 
-  function deposit() external payable {
-    require(canDeposit, "Deposit has been disabled");
-    
-    if(balances[msg.sender] >= 0) {
-      balances[msg.sender] += msg.value;
-    } else {
-      balances[msg.sender] = msg.value;
-      _contributerCount.increment();
-    } 
-    contractBalance += msg.value;
-
-    require(balances[msg.sender] <= 10, "your balance is greater than the allowed amount");
-  }
-
-  function withdraw() external {
-    require(canWithdraw == true, "withdraw is not enabled");
-    require(balances[msg.sender] >= 0, "You are not eligible to withdraw");
-
-    balances[msg.sender] = 0;
-    (bool sent, bytes memory data) = msg.sender.call{value: shareValue}("");
-    require(sent, "Failed to send Ether");
-  }
+  function getContractBalance() public view returns (uint) {
+    return contractBalance;
+  } 
 }
